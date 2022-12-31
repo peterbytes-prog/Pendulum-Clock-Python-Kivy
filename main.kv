@@ -1,0 +1,148 @@
+<ModalControl@AnchorLayout>:
+    anchor_x: 'right'
+    anchor_y: 'center'
+    size_hint: 1, None
+    size: 1, self.children[0].height
+    GridLayout
+        cols: 2
+        size_hint: None, None
+        size: self.minimum_size
+        spacing: 5
+        Button:
+            text: 'Cancel'
+            size_hint: None, None
+            size: self.texture_size
+            padding: 30,20
+            background_color: (1,0,0)
+            on_release: root.popup.dismiss()
+        Button:
+            text: 'Save'
+            size_hint: None, None
+            size: self.texture_size
+            padding: 30,20
+            background_color: (0,1,0)
+            on_release: root.popup.save()
+
+<AnchorableButton>:
+    anchor_x: 'center'
+    anchor_y: 'center'
+    text: ""
+    customizing: {}
+    Button:
+        text: self.parent.text
+        size_hint: 0.8,None
+        size: 1, 100
+        on_press: self.parent.showSettings()
+
+<ColorPickerModal>:
+    auto_dismiss: False
+    title: 'Select Color'
+    size_hint: (0.75,0.5)
+    pos_hint: {'center_x':0.5, 'center_y':0.5}
+    clrpckr: _clrpckr
+    GridLayout:
+        cols: 1
+        GridLayout:
+            cols: 1
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                ColorWheel:
+                    id: _clrpckr
+            Label:
+                size_hint: 1, None
+                size: self.texture_size
+                text: "Value = RGBA" +str([round(root.clrpckr.color[0],2),round(root.clrpckr.color[1],2),round(root.clrpckr.color[2],2), round(root.clrpckr.color[3],2) ])
+        ModalControl:
+            popup: root
+
+<CustomizableListPopUp>:
+    auto_dismiss: False
+    buttonsgrid:_buttonsgrid
+    title: "Select Component To Customize"
+    size_hint: (0.75,0.75)
+    pos_hint: {'center_x':0.5, 'center_y':0.5}
+    GridLayout:
+        cols: 1
+        GridLayout:
+            cols: 1
+            id: _buttonsgrid
+        ModalControl:
+            popup: root
+
+<Clock>:
+    anchor_x: 'center'
+    anchor_y: 'center'
+
+<Pendulum>:
+    anchor_x: 'center'
+    anchor_y: 'center'
+    display: _display
+    GridLayout:
+        cols: 1
+        size_hint: 1, 0.5
+        canvas:
+            Color:
+                rgb: root.digitalBackgroundColor
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            id: _display
+            text: "00:00:00 AM"
+            size_hint: 1, 1.50
+            texture_size: self.size
+            font_size: int((self.size[0]**2 + self.size[1]**2)**0.35)
+        Label:
+            text: "Mon Dec 26"
+
+<ClockWindow>:
+    cols: 1
+    clock: _clock
+    pendulum: _pendulum
+    settingscont: _settingscont
+    clockcase: _clockcase
+    # digital: self.pendulum.digital
+    AnchorLayout:
+        anchor_x:'center'
+        anchor_y:'center'
+        ClockCase:
+            clock: root.clock
+            pendulum: root.pendulum
+            id: _clockcase
+            size_hint: None,1
+            size: [int(self.clock.clockwidth[0]*1.2),self.clock.clockwidth[1]]
+            canvas:
+                Color:
+                    rgb: self.woodbordercolor
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+                Color:
+                    rgb: self.woodcolor
+                Rectangle:
+                    size: [self.size[0]*0.9,self.size[1]*0.95]
+                    pos: [self.pos[0]+ ((self.size[0]*0.1)/2),self.pos[1]+ ((self.size[1]*0.05)/2)]
+        GridLayout:
+            cols: 1
+            size_hint: 0.9,0.9
+            clockcase: root.clockcase
+            Clock:
+                size_hint: 1,0.8
+                id: _clock
+                clockwidth: [0,0]
+                digital: root.pendulum
+            Pendulum:
+                id: _pendulum
+        CustomizeFloatLayout:
+            id: _settingscont
+            pendulum: root.pendulum
+            clock: root.clock
+            clockcase:_clockcase
+            Button:
+                pos_hint: {'top':1, 'right':1}
+                text:'Customize'
+                size_hint: None,None
+                size: self.texture_size
+                padding: 10,10
+                on_press: self.parent.openPopUp()
