@@ -181,6 +181,12 @@ class Clock(AnchorLayout):
             'HOUR': t_tot//3600
         }
         self.draw()
+    def on_clockcolor(self, *args, **kwargs):
+        self.drawOnResize()
+        pass
+    def on_clockframebordercolor(self, *args, **kwargs):
+        self.drawOnResize()
+        pass
     def on_TIME(self, *args, **kwargs):
         if getattr(self,'digital'):
             self.digital.display.text = str(abs(self.TIME['HOUR']%12)).rjust(2,'0')+":"+str(self.TIME['MINUTE']).rjust(2,'0')+":"+str(self.TIME['SECOND']).rjust(2,'0')+str(' PM' if self.TIME['HOUR']>12 else " AM")
